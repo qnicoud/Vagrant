@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: my-healthcheck
+  name: my-healthcheck
+spec:
+  containers:
+  - name: my-healthcheck
+    image: vanessakovalsky/my-healthcheck
+    livenessProbe:
+      httpGet:
+        path: /healthz.html
+        port: 8080
+        httpHeaders:
+          - name: X-Custom-Header
+            value: Awesome
+      initialDelaySeconds: 3
+      periodSeconds: 3

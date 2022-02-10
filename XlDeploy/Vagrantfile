@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrant multi-machine sample setup
+
+
+Vagrant.configure("2") do |config|
+  
+  #config.vm.provision "shell", path: "ansible_all_vms.sh"
+
+  (1..2).each do |i|
+    config.vm.define "managed-#{i}" do |managed|
+      managed.vm.provider "virtualbox" do |vb|
+        vb.memory = 2048
+        vb.cpus = 2
+      end
+      managed.vm.network "private_network", ip: "192.168.56.13#{i}"
+      managed.vm.hostname = "managed#{i}"
+      managed.vm.box = "ubuntu/focal64"
+    end
+  end
+  
+  config.vm.define "controller" do |controller|
+    controller.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+
+    controller.vm.network "private_network", ip: "192.168.56.130"
+    controller.vm.network "forwarded_port", guest: 4516, host: 4516, host_ip: "127.0.0.1"
+    controller.vm.hostname = "controller"
+    controller.vm.box = "ubuntu/focal64"
+  end
+end

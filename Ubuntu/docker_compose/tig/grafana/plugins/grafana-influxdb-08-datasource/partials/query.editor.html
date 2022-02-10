@@ -1,0 +1,88 @@
+<query-editor-row query-ctrl="ctrl" can-collapse="false" has-text-edit-mode="true">
+
+	<div ng-if="ctrl.target.rawQuery">
+    <div class="gf-form">
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.query" spellcheck="false" ng-blur="ctrl.refresh()"></input>
+    </div>
+	</div>
+
+	<div ng-if="!ctrl.target.rawQuery">
+    <div class="gf-form-inline">
+      <div class="gf-form gf-form--grow">
+        <label class="gf-form-label width-8">Series</label>
+        <input type="text"
+              class="gf-form-input"
+              ng-model="ctrl.target.series"
+              spellcheck='false'
+              bs-typeahead="listSeries"
+              match-all="true"
+              min-length="3"
+              placeholder="series name"
+              data-min-length=0 data-items=100
+              ng-blur="ctrl.seriesBlur()">
+        </input>
+      </div>
+    </div>
+
+    <div class="gf-form-inline">
+      <div class="gf-form ">
+        <label class="gf-form-label width-8">Select</label>
+        <span class="dropdown">
+          <span influxdb-func-editor08 class="tight-form-item tight-form-func">
+				</span>
+			</div>
+
+      <div class="gf-form">
+        <label class="gf-form-label">Where</label>
+				<input type="text" class="gf-form-input" ng-model="ctrl.target.condition"
+				bs-tooltip="'Add a where clause'" data-placement="right" spellcheck='false' placeholder="column ~= value" ng-blur="ctrl.panelCtrl.refresh();">
+			</div>
+
+      <div class="gf-form">
+        <div class="gf-form-label">Group by column</div>
+				<input type="text" class="gf-form-input" ng-model="ctrl.target.groupby_field" bs-tooltip="'Add a group by column or leave blank'"
+				placeholder="column" spellcheck="false" bs-typeahead="listColumns" data-min-length=0 ng-blur="ctrl.panelCtrl.refresh();">
+			</div>
+
+			<div class="gf-form dropdown">
+				<a class="gf-form-label pointer" data-toggle="dropdown" bs-tooltip="'Insert missing values, important when stacking'" data-placement="right">
+					<span ng-show="ctrl.target.fill">
+						fill ({{ctrl.target.fill}})
+					</span>
+					<span ng-show="!ctrl.target.fill">
+						no fill
+					</span>
+				</a>
+				<ul class="dropdown-menu">
+					<li><a ng-click="ctrl.target.fill = ''">no fill</a></li>
+					<li><a ng-click="ctrl.target.fill = 'null'">fill (null)</a></li>
+					<li><a ng-click="ctrl.target.fill = '0'">fill (0)</a></li>
+				</ul>
+			</div>
+
+      <div class="gf-form gf-form--grow">
+				<div class="gf-form-label gf-form-label--grow"></div>
+			</div>
+    </div>
+  </div>
+
+  <div class="gf-form-inline">
+    <div class="gf-form">
+      <label class="gf-form-label width-8">Group by time</label>
+      <input type="text" class="gf-form-input" ng-model="target.interval"
+        spellcheck='false' placeholder="{{ctrl.panel.interval}}" data-placement="right"
+        bs-tooltip="'Leave blank for auto handling based on time range and panel width'"
+        ng-model-onblur ng-change="ctrl.panelCtrl.refresh()" >
+      </input>
+    </div>
+    <div class="gf-form">
+      <label class="gf-form-label">Alias</label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.target.alias" spellcheck='false' placeholder="alias" ng-blur="ctrl.panelCtrl.refresh()">
+    </div>
+
+    <div class="gf-form gf-form--grow">
+      <div class="gf-form-label gf-form-label--grow"></div>
+    </div>
+  </div>
+
+</query-editor-row>

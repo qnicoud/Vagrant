@@ -1,0 +1,72 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+
+Vagrant.configure("2") do |config|
+  
+    config.vm.box = "centos/8"
+  
+    config.vm.define "controler" do |controler|
+      controler.vm.hostname = "srv-openstack-controler"
+      controler.vm.network "private_network", ip: "10.0.0.11"
+      controler.vm.provider "virtualbox" do |vb|
+        #   # Customize the amount of memory on the VM:
+          vb.memory = "8192"
+          vb.cpus = 2
+          vb.name = "Openstack_controler"
+        end
+      controler.vm.provision "shell", path: "provision-openstack.sh"
+    end
+    config.vm.define "network" do |network|
+      network.vm.hostname = "srv-openstack-network"
+      network.vm.network "private_network", ip: "10.0.0.21"
+      network.vm.network "private_network", ip: "10.0.1.21"
+      network.vm.network "public_network"
+      network.vm.provider "virtualbox" do |vb|
+        #   # Customize the amount of memory on the VM:
+          vb.memory = "8192"
+          vb.cpus = 2
+          vb.name = "Openstack_network"
+        end
+      network.vm.provision "shell", path: "provision-openstack.sh"
+    end
+    config.vm.define "compute" do |compute|
+      compute.vm.hostname = "srv-openstack-compute"
+      compute.vm.network "private_network", ip: "10.0.0.31"
+      compute.vm.network "private_network", ip: "10.0.1.31"
+      compute.vm.network "private_network", ip: "10.0.2.31"
+      compute.vm.provider "virtualbox" do |vb|
+        #   # Customize the amount of memory on the VM:
+          vb.memory = "16384"
+          vb.cpus = 2
+          vb.name = "Openstack_compute"
+        end
+      compute.vm.provision "shell", path: "provision-openstack.sh"
+    end
+    config.vm.define "block_storage" do |block_storage|
+      block_storage.vm.hostname = "srv-openstack-block"
+      block_storage.vm.network "private_network", ip: "10.0.0.41"
+      block_storage.vm.network "private_network", ip: "10.0.2.41"
+      block_storage.vm.provider "virtualbox" do |vb|
+        #   # Customize the amount of memory on the VM:
+          vb.memory = "8192"
+          vb.cpus = 2
+          vb.name = "Openstack_block_storage"
+        end
+      block_storage.vm.provision "shell", path: "provision-openstack.sh"
+    end
+    config.vm.define "object_storage" do |object_storage|
+      object_storage.vm.hostname = "srv-openstack-object"
+      object_storage.vm.network "private_network", ip: "10.0.0.51"
+      object_storage.vm.network "private_network", ip: "10.0.2.51"
+      object_storage.vm.provider "virtualbox" do |vb|
+        #   # Customize the amount of memory on the VM:
+          vb.memory = "8192"
+          vb.cpus = 2
+          vb.name = "Openstack_object_storage"
+        end
+      object_storage.vm.provision "shell", path: "provision-openstack.sh"
+    end
+  
+  end
+  

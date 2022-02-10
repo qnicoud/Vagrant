@@ -1,0 +1,13 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+    v.cpus = 2
+  end
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "forwarded_port", guest: 10000, host: 10000, host_ip: "127.0.0.1"
+  
+  config.vm.provision "shell", path: "install.sh"
+end

@@ -1,0 +1,96 @@
+- name: Mon premier playbook
+  hosts: host01
+  become: yes
+  tasks:
+    - name: update all packages ..
+      apt:
+        name: '*'
+        state: latest
+    - name: install apache and php latest version
+      apt:
+        name:
+          - apache2
+          - php
+          - php-mysql
+        state: present
+        update_cache: yes
+    - name : Give writable mode to http folder
+      file:
+        path: /var/www/html
+        state: directory
+        mode: '0755'
+    - name: Remove default index.html
+      file:
+        path: /var/www/html/index.html
+        state: absent
+    - name: upload web app source
+      copy:
+        src: files/app/
+        dest: /var/www/html
+    - name: deploy php database config
+      copy:
+        src: "files/db-config.php"
+        dest: "/var/www/html/db-config.php"
+    - name: ensure apache service is start
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+- name: Mon deuxième playbook
+  hosts: host02
+  vars_files: vars/main.yml
+  become: yes
+  tasks:
+    - name: install mariadb
+      apt:
+        name:
+          - mariadb-server
+          - python3-pip
+          - python3-setuptools
+          - python3-pymysql
+        state: present
+        update_cache: yes
+    - name: Install python mariadb module
+      pip: name=mariadb
+    - name: Create MySQL client config
+      copy:
+        dest: "/root/.my.cnf"
+        content: |
+          [client]
+          user=root
+          password={{ root_password }}
+        mode: 0400
+    - name: Allow external MySQL connexions
+      lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        regexp: '^bind-address'
+        line: "# bind-address"
+      notify: Restart mysql
+    - name: upload sql table config
+      copy:
+        src: "files/table.sql"
+        dest: "/tmp/table.sql"
+    - name : moving mysql home
+      user:
+        name: mysql
+        home: /var/lib/mysql
+    - name: start mysql
+      shell:
+        service mysql start
+    - name: add sql table to database
+      mysql_db:
+        name: "{{ mysql_dbname }}"
+        #state: present
+        login_user: root
+        login_password: '{{ root_password }}'
+        state: import
+        target: /tmp/table.sql
+    - name: "Create {{ mysql_user }} with all {{ mysql_dbname }} privileges"
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_password }}"
+        priv: "*.*:ALL"
+        state: present
+        login_user: root
+        login_password: '{{ root_password }}'
+        login_unix_socket: /var/run/mysqld/mysqld.sock

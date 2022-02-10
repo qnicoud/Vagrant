@@ -1,0 +1,31 @@
+{
+  "id": "grafana-influxdb-08-datasource",
+  "type": "datasource",
+  "name": "InfluxDB 0.8.x",
+
+  "staticRoot": ".",
+
+  "defaultMatchFormat": "regex values",
+  "metrics": true,
+  "annotations": true,
+
+  "info": {
+    "description": "datasource plugin for influxdb 08",
+    "author": {
+      "name": "Raintank Inc.",
+      "url": "http://raintank.io"
+    },
+    "keywords": ["influxdb", "08"],
+    "logos": {
+      "small": "img/influxdb_logo_small.png",
+      "large": "img/influxdb_logo_large.png"
+    },
+    "version": "1.0.2",
+    "updated": "2016-02-10"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "3.x.x",
+    "plugins": [ ]
+  }
+}

@@ -1,0 +1,20 @@
+version: "3.3" 
+services:
+  owncloud:
+    image: owncloud/server
+    restart: always
+    volumes:
+      - ./ownlcoud_data/apps:/var/www/html/apps
+      - ./owncloud_data/config:/var/www/html/config
+      - ./owncloud_data/data:/var/www/html/data
+    ports:
+      - "80:80"
+
+  mysql:
+    image: mariadb
+    restart: always
+    environment:
+            MYSQL_ROOT_PASSWORD: test
+    volumes :
+      - ./dv_data:/var/lib/mysql
+            
